@@ -27,11 +27,18 @@ function Invoke-Modules {
             }
         }
     } else {
-         Load modules from URL
+         #Load modules from URL
         foreach ($module in $modules) {
             $url = "https://raw.githubusercontent.com/Annabxlla/BetterChecker/refs/heads/master/modules/$module"
             #Write-Host "Downloading and executing $module from $url..." -ForegroundColor Green
-            Invoke-Expression (Invoke-WebRequest $url -UseBasicP)
+            $oldProgressPref = $ProgressPreference
+            try {
+                $ProgressPreference = 'SilentlyContinue'
+                Invoke-Expression (Invoke-WebRequest -Uri $url -UseBasicParsing)
+            }
+            finally {
+                $ProgressPreference = $oldProgressPref
+            }
         }
     }
 }
