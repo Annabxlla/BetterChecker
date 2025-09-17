@@ -29,7 +29,7 @@ function Invoke-Modules {
     } else {
          Load modules from URL
         foreach ($module in $modules) {
-            $url = "https://raw.githubusercontent.com/Annabxlla/art/refs/heads/master/modules/$module"
+            $url = "https://raw.githubusercontent.com/Annabxlla/BetterChecker/refs/heads/master/modules/$module"
             #Write-Host "Downloading and executing $module from $url..." -ForegroundColor Green
             Invoke-Expression (Invoke-WebRequest $url -UseBasicP)
         }
@@ -68,7 +68,7 @@ if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     if ($args -contains "-dev") {
         Start-Process powershell -verb runAs -ArgumentList "-NoExit -Command $scriptPath"
     } else {
-        Start-Process powershell -verb runAs -ArgumentList "-NoExit -Command Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/Annabxlla/art/refs/heads/master/main.ps1')"
+        Start-Process powershell -verb runAs -ArgumentList "-NoExit -Command Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/Annabxlla/BetterChecker/refs/heads/master/main.ps1')"
     }
     Exit
 } else {
