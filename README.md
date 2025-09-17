@@ -1,9 +1,14 @@
 # BetterChecker
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PowerShell](https://img.shields.io/badge/built%20with-PowerShell-5391FE)](https://learn.microsoft.com/powershell/)
+[![Issues](https://img.shields.io/github/issues/Annabxlla/BetterChecker)](https://github.com/Annabxlla/BetterChecker/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Annabxlla/BetterChecker)](https://github.com/Annabxlla/BetterChecker/pulls)
+
 BetterChecker is an open-source **PowerShell** tool for verifying the integrity of a player’s setup in **Tom Clancy’s Rainbow Six Siege**.  
 It’s designed for streamers, YouTubers, and other trusted individuals to have a suspected player run the script to check for common cheats, injectors, or unfair modifications.
 
-## 📝 Overview
+## Overview
 
 - **Purpose-built for Rainbow Six Siege**  
   Scans for widely known cheats, injectors, or suspicious modifications.
@@ -13,14 +18,14 @@ It’s designed for streamers, YouTubers, and other trusted individuals to have 
 - **Easy to Run**  
   Delivered as a single PowerShell script that can be executed via a one-liner.
 
-## ✨ Features
+## Features
 
 - Detects common cheat tools and modifications.
 - Lightweight and fast — minimal system impact.
 - Fully open source for transparency.
 - Regularly updated detection signatures (when applicable).
 
-## 🚀 Running BetterChecker
+## Running BetterChecker
 
 You can run BetterChecker directly with a one-liner in PowerShell.  
 
@@ -41,7 +46,7 @@ git clone https://github.com/Annabxlla/BetterChecker
 ### After running
 The script will perform checks and output a report indicating any detected suspicious files, processes, or configurations.
 
-## ⚙️ Project Structure
+## Project Structure
 ```
 BetterChecker/
 ├── main.ps1        # main detection script
@@ -49,10 +54,11 @@ BetterChecker/
 └── README.md
 ```
 
-## 🛡️ Intended Use
+## Intended Use
 
 BetterChecker is meant for **legitimate, non-malicious verification** by trusted parties (streamers, content creators, competitive players).  
 It is **not** an anti-cheat system and does not provide real-time enforcement.
 
-## 📜 License
+## License
 This project is licensed under the [MIT License](LICENSE).  
+
