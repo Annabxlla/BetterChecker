@@ -1,0 +1,100 @@
+function Invoke-Modules {
+    $modules = @(
+        'Write-Header.ps1',
+        'Test-SecureBoot.ps1',
+        'Test-WifiSupport.ps1',
+        'Get-InstalledBrowsers.ps1',
+        'Get-InstalledApplications.ps1',
+        'Get-PrefetchFiles.ps1',
+        'Get-ZipRarFiles.ps1',
+        'Get-RegistryKeyFiles.ps1',
+        'Get-RecentFiles.ps1',
+        'Get-Jumplists.ps1',
+        'Join-Logs.ps1',
+        'Find-SuspiciousFiles.ps1',
+        'Get-UbisoftProfiles.ps1'
+
+    )
+
+    # Check if the -dev argument is provided
+    if ($vars -contains "-dev") {
+        # Load modules from local ./modules/ directory
+        foreach ($module in $modules) {
+            $modulePath = "./modules/$module"
+            if (Test-Path $modulePath) {
+                . $modulePath
+            }
+            else {
+                Write-Host "[!] Module '$module' not found in './modules/'" -ForegroundColor Red
+            }
+        }
+    }
+    else {
+        Load modules from URL
+        foreach ($module in $modules) {
+            $url = "https://raw.githubusercontent.com/Annabxlla/art/refs/heads/master/modules/$module"
+            #Write-Host "Downloading and executing $module from $url..." -ForegroundColor Green
+            Invoke-Expression (Invoke-WebRequest $url -UseBasicP)
+        }
+    }
+}
+
+# Main function to run the script logic
+function Main {
+    param (
+        [string[]]$vars
+    )
+
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+    $logDir = "C:/temp/pccheck/logs"
+    if (Test-Path $logDir) {
+        Remove-Item -Path "$logDir/*" -Force
+    }
+    New-Item -ItemType Directory -Path $logDir | Out-Null
+
+    # Load the modules
+    Invoke-Modules -vars $vars
+
+    # Now execute the rest of the script
+    $combinedFile = [System.IO.Path]::Combine([System.Environment]::GetFolderPath('Desktop'), "PcCheckLogs.md")
+    Get-Content $combinedFile | Set-Clipboard
+
+    # ask user if they want to send logs to the developer using the module Send-Logs.ps1 (not downloaded yet)
+    #use a Yes/No prompt
+    Write-Host "Do you want to send the logs to the developer? [y/N]: " -NoNewline
+
+    $sendLogs = (Read-Host).Trim()
+    if ([string]::IsNullOrWhiteSpace($sendLogs)) {
+        $sendLogs = "N"
+    }
+
+    if ($sendLogs -match '^(y|yes|yeah|yea|sure|ok|okay)$') {
+        $url = "https://raw.githubusercontent.com/Annabxlla/BetterChecker/refs/heads/master/modules/Send-Logs.ps1"
+        Invoke-Expression (Invoke-WebRequest $url -UseBasicP)
+    }
+    else {
+        Write-Host "Skipping log sending." -ForegroundColor DarkYellow
+    }
+
+    Write-Host "`nPress any key to exit..."
+    [void][System.Console]::ReadKey($true)
+    Exit
+}
+
+# Make sure the script is running in admin mode.
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+    $scriptPath = $MyInvocation.MyCommand.Path
+    $global:args = $args
+    if ($args -contains "-dev") {
+        Start-Process powershell -verb runAs -ArgumentList "-NoExit -Command $scriptPath"
+    }
+    else {
+        Start-Process powershell -verb runAs -ArgumentList "-NoExit -Command Invoke-Expression (Invoke-WebRequest 'https://raw.githubusercontent.com/Annabxlla/BetterChecker/refs/heads/master/main.ps1')"
+    }
+    Exit
+}
+else {
+    Main -vars $args
+}
+
