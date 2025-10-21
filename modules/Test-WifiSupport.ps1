@@ -5,6 +5,29 @@ try {
         New-Item -ItemType Directory -Path $logDir | Out-Null
     }
 
+    $ethernetAdapters = @(Get-NetAdapter -Name * -Physical -IncludeHidden |
+        #pipe to Where-Object and filter the discription for "Controller" or "Ethernet" but not "Virtual"
+        Where-Object { ($_.InterfaceDescription -match "Ethernet|Controller") -and ($_.InterfaceDescription -notmatch "Virtual") })
+    Start-Sleep -Seconds 1
+    # Log header
+    "## Ethernet Adapter Check`n" | Out-File -Append -FilePath "$logDir/WifiSupport.md"
+    if ($ethernetAdapters.Count -eq 0) {
+        Write-Host "[-] No Ethernet adapters detected." -ForegroundColor DarkYellow
+        "No Ethernet adapters detected." | Out-File -Append -FilePath "$logDir/WifiSupport.md"
+    }
+    else {
+        foreach ($adapter in $ethernetAdapters) {
+            if ($adapter.Status -ne "Up") {
+                Write-Host "[!] Ethernet adapter '$($adapter.InterfaceDescription)' is $($adapter.Status)." -ForegroundColor Red
+                "Ethernet adapter '$($adapter.InterfaceDescription)' is $($adapter.Status)." | Out-File -Append -FilePath "$logDir/WifiSupport.md"
+            }
+            else {
+                Write-Host "[+] Ethernet adapter '$($adapter.InterfaceDescription)' is connected." -ForegroundColor Green
+                "Ethernet adapter '$($adapter.InterfaceDescription)' is connected." | Out-File -Append -FilePath "$logDir/WifiSupport.md"
+            }
+        }
+    }
+
     # Grab all Wi-Fi adapters
     $wifiAdapters = @(Get-NetAdapter -Name * -Physical -IncludeHidden |
         Where-Object { $_.InterfaceDescription -match "Wi-Fi" })
@@ -18,7 +41,7 @@ try {
         "No Wi-Fi adapters detected." | Out-File -Append -FilePath "$logDir/WifiSupport.md"
     }
     elseif ($wifiAdapters.Count -gt 1) {
-        Write-Host "[-] Multiple Wi-Fi adapters detected ($($wifiAdapters.Count))." -ForegroundColor Red
+        Write-Host "[!] Multiple Wi-Fi adapters detected ($($wifiAdapters.Count))." -ForegroundColor Red
         "Multiple Wi-Fi adapters detected ($($wifiAdapters.Count))." | Out-File -Append -FilePath "$logDir/WifiSupport.md"
         $wifiAdapters | ForEach-Object {
             Write-Host "    Adapter: $($_.InterfaceDescription) - Status: $($_.Status)"

